@@ -1,4 +1,4 @@
-**Chessputzer** recognizes chess positions. Use the [web interface](https://www.ocf.berkeley.edu/~abhishek/putz/) (easier!) or follow these [instructions](commandline.md) for the command line.  
+**Chessputzer Greenshot** recognizes chess positions. This fork is for use as a [Greenshot](https://getgreenshot.org) plugin in order to automatically take a screenshot and put the corresponding FEN in your clipboard.  It has been updated to use with Python 3.
 
 ![Examples](boardexamples.png)
 
@@ -9,6 +9,42 @@ For best results, include the border of the chessboard and crop close to it. If 
 Please let me know if you have examples of books and images that cause problems.
 
 Have fun!
+
+----
+
+**Installation Instructions**
+
+1. Install [Python 3](https://www.python.org/downloads/)
+
+2. Download [code](https://github.com/andrewkress/chessputzer/releases/)
+
+3. Install dependencies
+* Run the included install_requirements.bat as administrator
+
+4. Install [Greenshot](https://getgreenshot.org)
+
+5. Configure Greenshot
+
+* Configure External Command:
+
+![Task Pane](install_captures/taskpane.png)
+
+* Create new command
+
+![Create Command](install_captures/newcommand.png)
+
+* Assure settings are correct
+
+![Enter Settings](install_captures/commandsettings.png)
+
+1. Name you want in the menu
+2. Path to python that you installed such as C:\Python39\python.exe
+3. Argument to call the script to convert the image to FEN. Copy exactly as below if you downloaded into your Documents.  Adjust this as necessary
+4. "c:\Users\andrew.kress\Documents\chessputzer\putzmain.py" -f "{0}"
+
+* Test that the board image is converted properly to FEN
+
+![Test Config](install_captures/test.png)
 
 ----
 
