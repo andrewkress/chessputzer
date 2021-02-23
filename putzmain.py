@@ -12,13 +12,14 @@ import cv2
 #from IPython.display import display
 import glob
 from os.path import basename
-import requests
+# import requests
 from io import BytesIO
-import sys
+import sys, os
 import argparse,imghdr
+import pyperclip
 
-#if sys.platform == 'win32':
-#    import PIL.ImageGrab as ImageGrab
+if sys.platform == 'win32':
+    import PIL.ImageGrab as ImageGrab
 
 from putzlib import pathtemps,pieces,piecenames
 from putzlib import houghbox,splitboardhough,splitboardcontour,boardtofen,norma
@@ -198,7 +199,7 @@ def backfilter(im,finalshape=(32,32),passes=2):
     for _ in range(passes):
         mask =np.zeros(imcvg.shape,np.uint8)
         ee = cv2.Canny(imcvg,200,400,apertureSize = 3)
-        _,contours,_ = cv2.findContours(ee, 1, 2)
+        contours,_ = cv2.findContours(ee, 1, 2)
         dashes = [c for c in contours if abs(cv2.minAreaRect(c)[2]+45)<8]
         cv2.drawContours(mask,dashes,-1,255,4)
         imclean = np.where(mask==0,imcvg,0)
@@ -213,7 +214,8 @@ def fentoimg(fen):
 
 ### Load image templates
 nsets = 3
-alltemps = np.load('pbarrs.npz').items()[0][1]
+pathname = os.path.dirname(sys.argv[0])
+alltemps = list(np.load(os.path.join(pathname, 'pbarrs.npz')).items())[0][1]
 numpieces = nsets * 12
 rows = alltemps.shape[0]//numpieces
 pbarrs = [alltemps[rows*i:rows*(i+1)][:] for i in range(numpieces)]
@@ -237,12 +239,10 @@ if __name__ == '__main__':
         else:
             bd = Board(fname)
             fen = bd.getpieces(pbarrs)
-            with open(outfile,"w") as fileout:
-                fileout.write(fname+"\n")
-                if fen:
-                    fileout.write(fen+"\n")
-                else:
-                    fileout.write("Couldn't find chessboard\n")
+            if fen:
+                pyperclip.copy(fen)
+            else:
+                pyperclip.copy("Couldn't find chessboard")
     elif args["directory"]:
         imdir = args["directory"]
         if imdir[-1] != "/":
@@ -260,4 +260,8 @@ if __name__ == '__main__':
                     fileout.write(fen+"\n")
                 else:
                     fileout.write("Couldn't find chessboard\n")
-
+    else: # create fen from clipboard!
+        bd = Board()
+        fen = bd.getpieces(pbarrs)
+        pyperclip.copy(fen)
+        print(fen + '<- copied to the clipboard.')
